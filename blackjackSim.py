@@ -11,6 +11,9 @@ env = gym.make('Blackjack-v0')
 # enable for demo
 display_demo = True
 
+# display graph
+display_graph = True
+
 # deck info
 sums = [i for i in range(2, 22)]
 dealer_hands = [i for i in range(1,11)]
@@ -20,9 +23,9 @@ poss_actions = [0, 1]
 
 # tinkering variables
 alpha = 0.4
-num_games = 1000000
+num_games = 200000
 discount_factor = 0.95
-method = 4
+method = 0
 if method == 0: # reward = ucb
     title = "Upper confidence bound"
     wr_file = "training_wr_0.p"
@@ -63,9 +66,7 @@ def init_tables(q_util, win_rates):
 
 # get future states
 def get_next_util(q_util, prev_state):
-
     if prev_state[1] == 0:
-
         return q_util[prev_state]
     sum_q = 0
     for i in cards:
@@ -103,7 +104,6 @@ def get_utility(q_util, state, rs):
     if method == 3 or method == 4:
         q_prime = get_next_util(q_util, state)
         q_util[state] = (1 - alpha) * q_util[state] + alpha * (rs + discount_factor * q_prime)
-
     else:
         q_util[state] = (1 - alpha) * q_util[state] + alpha * rs
     return q_util[state]
@@ -193,9 +193,10 @@ main()
 
 #print(wins_list)
 #print(games_list)
-plt.plot(games_list, wins_list)
-plt.ylabel("win rate")
-plt.xlabel("games")
-plt.title(title)
-plt.grid(True)
-plt.show()
+if display_graph:
+    plt.plot(games_list, wins_list)
+    plt.ylabel("win rate")
+    plt.xlabel("games")
+    plt.title(title)
+    plt.grid(True)
+    plt.show()
